@@ -14,6 +14,14 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::where('user_id', Auth::id())->get();
+
+        $activeTasks = $tasks->where('due_date', '>', now())->where('completed', false);
+        $pastDueTasks = $tasks->where('due_date', '<', now())->where('completed', false);
+        $completedTasks = $tasks->where('completed', true);
+        $scheduledTasks = $tasks->whereNull('due_date')->where('completed', false);
+
+        //dd($tasks);
+
         return view('tasks.index', compact('tasks'));
     }
 
@@ -33,7 +41,7 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|date|after_or_equal:today',
         ]);
 
         $task = new Task();
@@ -74,12 +82,21 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|date|after_or_equal:today',
         ]);
 
         $task->update($validated);
 
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully!');
+    }
+
+    public function complete(Task $task)
+    {
+        //$this->authorize('update', $task);
+        $task->completed = true;
+        $task->save();
+
+        return redirect()->route('tasks.index')->with('success', 'Task marked as completed!');
     }
 
     /**
