@@ -6,39 +6,24 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <tbody>
-                        @foreach ($tasks as $task)
-                        <tr>
-                            <td>{{ $task->title }}</td>
-                            <td>{{ $task->description }}</td>
-                            <td>{{ $task->due_date }}</td>
-                            <td>{{ ucfirst($task->status) }}</td>
-                            <td>
-                                <a href="{{ route('tasks.edit', $task) }}" class="btn btn-warning">Edit</a>
-                                <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <a href="{{ route('tasks.create') }}" class="btn btn-primary">Add Task</a>
-
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <h3 class="text-lg font-bold mb-4">Your Tasks</h3>
+                    <ul>
+                        @forelse($tasks as $task)
+                            <li class="mb-2">
+                                <a href="{{ route('tasks.show', $task->id) }}" class="text-blue-500 hover:underline">
+                                    {{ $task->title }}
+                                </a>
+                                <span class="text-sm text-gray-500">
+                                    (Due: {{ $task->due_date ? $task->due_date->format('M d, Y') : 'No deadline' }})
+                                </span>
+                            </li>
+                        @empty
+                            <p>No tasks available. <a href="{{ route('tasks.create') }}" class="text-blue-500">Create one now</a>!</p>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
         </div>
