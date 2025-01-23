@@ -22,6 +22,8 @@
                                 </span>
                             </li>
                     </ul>
+                    <a class="btn btn-warning" type="button" href="{{ route('tasks.edit', $task->id) }}">Edit</a>
+
                 </div>
             </div>
         </div>
